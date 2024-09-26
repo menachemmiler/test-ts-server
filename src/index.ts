@@ -1,8 +1,7 @@
 import exp, { Express } from "express";
 import beeperController from "./controllers/beeperController";
 import "dotenv/config";
-import Beeper from "models/beeperModel";
-import BeeperService from "./services/beeperService";
+
 
 const app: Express = exp();
 app.use(exp.json());

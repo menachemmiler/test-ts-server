@@ -40,11 +40,7 @@ export default class BeeperService {
       }
       toSave.push(allBeepers[i]);
     }
-    console.log(toSave)
     const ifSaved: boolean = await saveFileData<Beeper>("beepers", toSave);
-    if (ifSaved) {
-      console.log("explosion");
-    }
   }
 
   public static async deleteBepeer(id: number): Promise<boolean> {
@@ -72,7 +68,7 @@ export default class BeeperService {
       //to search in the beppers a beeper with same id and to like it and to replace it status
       const newBeepers: Beeper[] = allBeepers.map((b: Beeper) => {
         if (b.id == beeper.id) {
-          if (b.status == "deployed") {
+          if (statusBeeperDTO.status == "deployed") {
             setTimeout(() => {
               this.timerToExplosion(b.id); //מפעיל טיימר לאחרי 10 שניות מעביר אותו לסטטוס מפוצץ
             }, 10000);
@@ -105,3 +101,11 @@ export default class BeeperService {
     }
   }
 }
+
+
+// Longitude:
+// Lowest: 35.04438
+// Highest: 36.59793
+// Latitude:
+// Lowest: 33.01048
+// Highest: 34.6793
