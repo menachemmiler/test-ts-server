@@ -1,3 +1,4 @@
+import statusBeeperDTO from "../DTO/statusBeeperDTO";
 import { getFileData, saveFileData } from "../DAL/fileDataLayer";
 import NewBeeperDTO from "../DTO/NewBeeperDTO";
 import Beeper from "../models/beeperModel";
@@ -29,27 +30,40 @@ export default class BeeperService {
     return ifSaved;
   }
 
-  private static setStatus(beeper: Beeper):string {
-    switch (beeper.status) {
-      case "manufactured":
-        return "assembled";
-      case "assembled":
-        return "shipped";
-      case "shipped":
-        return "deployed";
+  private static async timerToExplosion(id: number): Promise<void> {
+    const allBeepers: Beeper[] = await BeeperService.getAllBeepers();
+    const toSave: Beeper[] = [];
+    for (let i = 0; i < allBeepers.length; i++) {
+      if (allBeepers[i].id == id) {
+        allBeepers[i].status = "detonated";
+        allBeepers[i].detonated_at = new Date();
+      }
+      toSave.push(allBeepers[i]);
     }
-    return beeper.status;
+    console.log(toSave)
+    const ifSaved: boolean = await saveFileData<Beeper>("beepers", toSave);
+    if (ifSaved) {
+      console.log("explosion");
+    }
   }
 
-  public static async deleteBepeer(id: number):Promise<boolean>{
-    const beepers:Beeper[] = await this.getAllBeepers();
+  public static async deleteBepeer(id: number): Promise<boolean> {
+    const beepers: Beeper[] = await this.getAllBeepers();
     //מציאת אותו ביפר
-    const listBeepersToSave:Beeper[] = beepers.filter((b:Beeper) => b.id != id);
-    const ifSaved:boolean = await saveFileData<Beeper>("beepers" ,listBeepersToSave);
+    const listBeepersToSave: Beeper[] = beepers.filter(
+      (b: Beeper) => b.id != id
+    );
+    const ifSaved: boolean = await saveFileData<Beeper>(
+      "beepers",
+      listBeepersToSave
+    );
     return ifSaved;
   }
 
-  public static async statusBeeper(beeper: Beeper): Promise<boolean> {
+  public static async statusBeeper(
+    beeper: Beeper,
+    statusBeeperDTO: statusBeeperDTO
+  ): Promise<boolean> {
     try {
       const { id, status, create_at, detonated_at, latitude, longitude, name } =
         beeper;
@@ -58,20 +72,32 @@ export default class BeeperService {
       //to search in the beppers a beeper with same id and to like it and to replace it status
       const newBeepers: Beeper[] = allBeepers.map((b: Beeper) => {
         if (b.id == beeper.id) {
+          if (b.status == "deployed") {
+            setTimeout(() => {
+              this.timerToExplosion(b.id); //מפעיל טיימר לאחרי 10 שניות מעביר אותו לסטטוס מפוצץ
+            }, 3000);
+          }
           return {
             id,
-            status: this.setStatus(b),
+            status: statusBeeperDTO.status,
             create_at,
             detonated_at,
-            latitude,
-            longitude,
-            name
+            latitude: statusBeeperDTO.latitude
+              ? statusBeeperDTO.latitude
+              : latitude, //אם הועבר מיקום בגוף הבקשה  וזה לא undefind
+            longitude: statusBeeperDTO.longitude
+              ? statusBeeperDTO.longitude
+              : longitude, //
+            name,
           };
         } else {
           return b;
         }
       });
-      const ifSaved: boolean = await saveFileData<Beeper>("beepers", newBeepers);
+      const ifSaved: boolean = await saveFileData<Beeper>(
+        "beepers",
+        newBeepers
+      );
       return ifSaved;
     } catch (err) {
       console.log(err);

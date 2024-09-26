@@ -123,14 +123,14 @@ router.get(
 
 router.put(
   "/:id/status",
-  async (req: Request, res: Response<ResponseMessage>): Promise<void> => {
+  async (req: Request, res: Response<ResponseMessage>): Promise<void> => {//update status & location?
     try {
       let getBeeper = await getBeeperById(parseFloat(req.params.id));
       if (getBeeper.err) {
         res.status(404).json(getBeeper);
       } else {
-        const beeper = getBeeper.message;
-        const changeStatus = await beeperService.statusBeeper(beeper as Beeper);
+        const beeper:Beeper = getBeeper.message as Beeper;
+        const changeStatus = await beeperService.statusBeeper(beeper, req.body)
         if (!changeStatus) {
           res.status(404).json({
             err: true,
@@ -197,25 +197,24 @@ router.delete(
   }
 );
 
-// //get beper by status
-// router.get(
-//   "/status/:status",
-//   async (req: Request, res: Response<ResponseMessage>): Promise<void> => {
-//     try {
-//       console.log(req.params.id);
-//       const resoulte = await getBeeperById(parseFloat(req.params.id));
-//       if (resoulte.err) {
-//         res.status(404).json(resoulte);
-//       } else {
-//         res.status(200).json(resoulte);
-//       }
-//     } catch (err: any) {
-//       res.status(404).json({
-//         err: true,
-//         message: `שגיאה בקבלת ביפר לפי מזהה${err}`,
-//       });
-//     }
-//   }
-// );
+//get beper by status
+router.get(
+  "/status/:status",
+  async (req: Request, res: Response<ResponseMessage>): Promise<void> => {
+    try {
+      const resoulte = await getBeeperByStatus(req.params.status);
+      if (resoulte.err) {
+        res.status(404).json(resoulte);
+      } else {
+        res.status(200).json(resoulte);
+      }
+    } catch (err: any) {
+      res.status(404).json({
+        err: true,
+        message: `שגיאה בקבלת ביפר לפי מזהה${err}`,
+      });
+    }
+  }
+);
 
 export default router;

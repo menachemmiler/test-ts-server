@@ -11,15 +11,7 @@ app.use("/api/beepers", beeperController);
 
 
 
-// const bepper:Beeper = {
-//   name: "2 beeper",
-//   detonated_at: "",
-//   latitude: 0,
-//   longitude: 0,
-//   id: 99.0692703742598,
-//   status: "manufactured",
-//   create_at: new Date()
-// }
+
 
 
 
