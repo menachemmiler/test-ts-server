@@ -78,12 +78,12 @@ export default class BeeperService {
             status: statusBeeperDTO.status,
             create_at,
             detonated_at,
-            latitude: statusBeeperDTO.latitude
-              ? statusBeeperDTO.latitude
-              : latitude, //אם הועבר מיקום בגוף הבקשה  וזה לא undefind
-            longitude: statusBeeperDTO.longitude
-              ? statusBeeperDTO.longitude
-              : longitude, //
+            latitude: statusBeeperDTO.latitude 
+            ? statusBeeperDTO.latitude 
+            : latitude, //אם הועבר מיקום בגוף הבקשה  וזה לא undefind
+          longitude: statusBeeperDTO.longitude
+            ? statusBeeperDTO.longitude
+            : longitude, //
             name,
           };
         } else {
@@ -100,12 +100,6 @@ export default class BeeperService {
       return false;
     }
   }
+
 }
 
-
-// Longitude:
-// Lowest: 35.04438
-// Highest: 36.59793
-// Latitude:
-// Lowest: 33.01048
-// Highest: 34.6793
