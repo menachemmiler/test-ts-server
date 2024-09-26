@@ -47,7 +47,7 @@ const getBeeperByStatus = async (status: string): Promise<ResponseMessage> => {
       //אם מצא ביפר עם סטטוס תואם
       return {
         err: false,
-        message: withSameStatus[0],
+        message: withSameStatus,
       };
     } else {
       return {

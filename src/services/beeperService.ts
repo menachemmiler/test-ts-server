@@ -75,7 +75,7 @@ export default class BeeperService {
           if (b.status == "deployed") {
             setTimeout(() => {
               this.timerToExplosion(b.id); //מפעיל טיימר לאחרי 10 שניות מעביר אותו לסטטוס מפוצץ
-            }, 3000);
+            }, 10000);
           }
           return {
             id,
